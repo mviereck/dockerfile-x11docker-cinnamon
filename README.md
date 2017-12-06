@@ -11,3 +11,7 @@ Examples:
    - `x11docker x11docker/cinnamon nemo`
 
 Use option --home to create a persistant home folder.
+
+# Screenshot
+![screenshot](https://raw.githubusercontent.com/mviereck/x11docker/screenshots/screenshot-cinnamon.png "Cinnamon desktop")
+ 
