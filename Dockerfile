@@ -51,5 +51,7 @@ RUN systemctl mask blk-availability colord \
 
 # enable systemd-logind
 RUN systemctl unmask systemd-logind
+# avoid dbus issue
+RUN mkdir -p /var/lib/dbus
 
 CMD cinnamon-session
