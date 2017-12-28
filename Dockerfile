@@ -1,57 +1,58 @@
 # x11docker/cinnamon
-#
-# Run cinnamon desktop and systemd in docker.
-#
-# Sample image for possible systemd setup.
-# - enabling/unmasking dbus and systemd-logind is essential.
-# - Disabling services that fail anyway in container
-#   speeds up systemd init time significantly.
-#
+# 
+# Run cinnamon desktop in docker. 
 # Use x11docker to run image. 
-# Get x11docker script and x11docker-gui from github: 
+# Get x11docker from github: 
 #   https://github.com/mviereck/x11docker 
 #
-# Run with hardware acceleration and init system systemd:
-#   x11docker --desktop --gpu --systemd x11docker/cinnamon
+# Run desktop with:
+#   x11docker --desktop --systemd x11docker/cinnamon
 #
-# Run single application (file manager):
+# Run single application:
 #   x11docker x11docker/cinnamon nemo
 #
-# Use option --home to create a persistant home folder.
+# You can add hardware acceleration with option:       --gpu
+# You can add sound with option:                       --pulseaudio 
+# You can share clipboard with option:                 --clipboard
+# You can create a persistent home folder with option: --home
+# See x11docker --help for further options.
+#
 
-FROM fedora:27
-# note: fedora and CentOS images can only build on fedora 
-#       or CentOS. Or use automated build on docker hub. 
-#       On other systems the build fails due to 
-#       incompatibility of fedora and CentOS dnf installer
-#       to docker's default aufs file systems.
+FROM debian:buster
+ENV DEBIAN_FRONTEND noninteractive
 
-RUN dnf -y update && \
-    dnf -y install @cinnamon systemd sudo && \
-    dnf clean all
+# language 
+RUN apt-get update && \
+    apt-get install -y apt-utils locales && \
+    echo "en_US.UTF-8 UTF-8" >/etc/locale.gen && \
+    dpkg-reconfigure locales && \
+    locale-gen && \
+    update-locale LANG=en_US.UTF-8 && \
+    apt-get upgrade -y && \
+    rm -rf /var/lib/apt/lists/*
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
 
-# disable display manager because X is provided by x11docker
-RUN systemctl mask lightdm gdm3 sddm lxdm slim kdm
+# cinnamon
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+            cinnamon cinnamon-l10n && \
+    rm -rf /var/lib/apt/lists/*
 
-# disable units failing in container
-RUN systemctl mask auditd firewalld \
-    libvirtd fwupd nfs-config rtkit-daemon \
-    udisks2 upower
+# utils
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+            dconf-cli gedit gnome-system-monitor gnome-terminal \
+            psmisc pulseaudio sudo synaptic xdg-user-dirs-gtk && \
+    rm -rf /var/lib/apt/lists/*
 
-# disable units obviously slowing down startup
-RUN systemctl mask dnfdaemon NetworkManager lm_sensors
+ENV DEBIAN_FRONTEND newt
 
-# disable some rather useless units for a bit faster startup
-RUN systemctl mask blk-availability colord \
-    dmraid-activation dracut-shutdown gssproxy \
-    iscsi-shutdown lvm2-lvmetad lvm2-monitor \
-    ModemManager netcf-transaction \
-    selinux-autorelabel-mark \
-    systemd-hwdb-update systemd-update-done
+# create startscript 
+RUN echo "#! /bin/sh\n\
+dconf write /org/cinnamon/desktop/background/picture-uri \"'file:///usr/share/backgrounds/gnome/Waterfalls.jpg'\"\n\
+exec cinnamon-session\n\
+" > /usr/local/bin/start && chmod +x /usr/local/bin/start 
 
-# enable systemd-logind
-RUN systemctl unmask systemd-logind
-# avoid dbus issue
-RUN mkdir -p /var/lib/dbus
-
-CMD cinnamon-session
+CMD start
