@@ -51,7 +51,9 @@ ENV DEBIAN_FRONTEND newt
 
 # create startscript 
 RUN echo "#! /bin/sh\n\
-dconf write /org/cinnamon/desktop/background/picture-uri \"'file:///usr/share/backgrounds/gnome/Waterfalls.jpg'\"\n\
+[ -e \$HOME/.cinnamon ] || {\n\
+  dconf write /org/cinnamon/desktop/background/picture-uri \"'file:///usr/share/backgrounds/gnome/Waterfalls.jpg'\"\n\
+}\n\
 exec cinnamon-session\n\
 " > /usr/local/bin/start && chmod +x /usr/local/bin/start 
 
