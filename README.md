@@ -7,10 +7,12 @@ Use x11docker to run image. Get x11docker script and x11docker-gui from github: 
 Examples:
  - Run with hardware acceleration and init system systemd:
    - `x11docker --desktop --gpu --systemd x11docker/cinnamon`
+ - Run with hardware acceleration and dbus system daemon without systemd:
+   - `x11docker --desktop --gpu --dbus-daemon x11docker/cinnamon`
  - Run single application (file manager):
    - `x11docker x11docker/cinnamon nemo`
 
-Use option --home to create a persistant home folder.
+Use option `--home` to create a persistant home folder.
 
 # Screenshot
 ![screenshot](https://raw.githubusercontent.com/mviereck/x11docker/screenshots/screenshot-cinnamon.png "Cinnamon desktop")
