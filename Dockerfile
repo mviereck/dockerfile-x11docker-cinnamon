@@ -26,7 +26,8 @@
 FROM debian:buster
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-mark hold iptables && apt-get -y upgrade
+RUN apt-get update && apt-mark hold iptables && \
+    apt-get -y dist-upgrade && apt-get autoremove -y && apt-get clean
 RUN apt-get install -y dbus-x11 procps psmisc
 
 # OpenGL / MESA
@@ -58,7 +59,12 @@ RUN apt-get update && \
 # startscript to copy dotfiles from /etc/skel
 # runs either CMD or image command from docker run
 RUN echo '#! /bin/sh\n\
-[ -e "$HOME/.config" ] || cp -R /etc/skel/. $HOME/ \n\
+[ -e \$HOME/.cinnamon ] || {\n\
+  dconf write /org/cinnamon/desktop/background/picture-uri \"'file:///usr/share/backgrounds/gnome/Sandstone.jpg'\"\n\
+}\n\
+[ -e "$HOME/.config" ] && { \n\
+  echo "Found existing .config, not copying from /etc/skel"\n\
+} || cp -R /etc/skel/. $HOME/ \n\
 exec $* \n\
 ' > /usr/local/bin/start 
 RUN chmod +x /usr/local/bin/start 
