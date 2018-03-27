@@ -62,14 +62,12 @@ RUN echo '#! /bin/sh\n\
 [ -e \$HOME/.cinnamon ] || {\n\
   dconf write /org/cinnamon/desktop/background/picture-uri \"'file:///usr/share/backgrounds/gnome/Sandstone.jpg'\"\n\
 }\n\
-[ -e "$HOME/.config" ] && { \n\
-  echo "Found existing .config, not copying from /etc/skel"\n\
-} || cp -R /etc/skel/. $HOME/ \n\
+[ -e "$HOME/.config" ] || cp -R /etc/skel/. $HOME/ \n\
 exec $* \n\
 ' > /usr/local/bin/start 
 RUN chmod +x /usr/local/bin/start 
 
-ENTRYPOINT start
-CMD cinnamon-session
+ENTRYPOINT ["/usr/local/bin/start"]
+CMD ["cinnamon-session"]
 
 ENV DEBIAN_FRONTEND newt
