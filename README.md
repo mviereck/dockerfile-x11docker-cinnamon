@@ -18,7 +18,9 @@ x11docker x11docker/cinnamon nemo
  - Shared host folder with                      `--sharedir DIR`
  - Hardware acceleration with option            `--gpu`
  - Clipboard sharing with option                `--clipboard`
- - Sound with                                   `--pulseaudio`
+ - Sound with                                   `--pulseaudio` or `--alsa`
+ - Webcam sharing with                          `--webcam`
+ - Printer sharing with                         `--printer`
  - Language locale setting with                 `--lang $LANG`
 
 See `x11docker --help` for further options.
