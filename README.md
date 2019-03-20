@@ -6,7 +6,7 @@ Run Cinnamon desktop in docker.
 
 Run desktop with:
 ```
-x11docker --desktop --dbus-system x11docker/cinnamon
+x11docker --desktop --gpu --init=systemd x11docker/cinnamon
 ```
 Run single application:
 ```
