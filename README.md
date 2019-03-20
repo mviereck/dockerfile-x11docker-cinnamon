@@ -21,7 +21,7 @@ x11docker x11docker/cinnamon nemo
  - Sound with                                   `--pulseaudio` or `--alsa`
  - Webcam sharing with                          `--webcam`
  - Printer sharing with                         `--printer`
- - Language locale setting with                 `--lang $LANG`
+ - Language locale setting with                 `--lang [=$LANG]`
 
 See `x11docker --help` for further options.
 
