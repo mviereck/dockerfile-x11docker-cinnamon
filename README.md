@@ -1,9 +1,8 @@
 # x11docker/cinnamon
 
-Run Cinnamon desktop in docker. 
- - Use x11docker to run image. 
- - Get x11docker from github: https://github.com/mviereck/x11docker 
-
+Run Cinnamon desktop in docker. Based on Debian.
+ - Use [x11docker](https://github.com/mviereck/x11docker) to run GUI applications and desktop environments in docker images. 
+ 
 Run desktop with:
 ```
 x11docker --desktop --gpu --init=systemd x11docker/cinnamon
@@ -15,13 +14,14 @@ x11docker x11docker/cinnamon nemo
 
 # Options:
  - Persistent home folder stored on host with   `--home`
- - Shared host folder with                      `--sharedir DIR`
+ - Shared host file or folder with              `--share PATH`
  - Hardware acceleration with option            `--gpu`
  - Clipboard sharing with option                `--clipboard`
- - Sound with                                   `--pulseaudio` or `--alsa`
- - Webcam sharing with                          `--webcam`
- - Printer sharing with                         `--printer`
- - Language locale setting with                 `--lang [=$LANG]`
+ - ALSA sound support with option               `--alsa`
+ - Pulseaudio sound support with option         `--pulseaudio`
+ - Language locale settings with                `--lang [=$LANG]`
+ - Printing over CUPS with                      `--printer`
+ - Webcam support with                          `--webcam`
 
 See `x11docker --help` for further options.
 
