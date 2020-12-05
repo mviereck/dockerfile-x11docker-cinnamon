@@ -37,11 +37,13 @@ RUN apt-get update && \
       mesa-utils-extra \
       libxv1 && \
     env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      xdg-utils \
-      xdg-user-dirs \
+      desktop-file-utils \
+      libpulse0 \
       menu-xdg \
       mime-support \
-      desktop-file-utils
+      xdg-utils \
+      xdg-user-dirs \
+      x11-xserver-utils
 
 # Language/locale settings
 #   replace en_US by your desired locale setting, 
@@ -62,7 +64,6 @@ RUN apt-get update && \
       gedit \
       gnome-system-monitor \
       gnome-terminal \
-      libpulse0 \
       sudo \
       synaptic
 
