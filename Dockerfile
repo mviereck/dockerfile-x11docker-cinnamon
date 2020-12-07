@@ -26,33 +26,43 @@
 # See x11docker --help for further options.
 
 FROM debian:buster
+ENV SHELL=/bin/bash
+ENV LANG=en_US.UTF-8
 
+# cleanup script for use after apt-get
+RUN echo '#! /bin/sh\n\
+env DEBIAN_FRONTEND=noninteractive apt-get autoremove -y\n\
+apt-get clean\n\
+find /var/lib/apt/lists -type f -delete\n\
+find /var/cache -type f -delete\n\
+find /var/log -type f -delete\n\
+exit 0\n\
+' > /cleanup && chmod +x /cleanup
+
+# basics
 RUN apt-get update && \
+    echo $LANG UTF-8 > /etc/locale.gen && \
     env DEBIAN_FRONTEND=noninteractive apt-get install -y \
-      dbus-x11 \
-      procps \
-      psmisc && \
+      locales && \
+    update-locale --reset LANG=$LANG && \
     env DEBIAN_FRONTEND=noninteractive apt-get install -y \
       mesa-utils \
       mesa-utils-extra \
       libxv1 && \
     env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      ca-certificates \
+      dbus-x11 \
       desktop-file-utils \
+      libcups2 \
       libpulse0 \
       menu-xdg \
       mime-support \
-      xdg-utils \
+      procps \
+      psmisc \
       xdg-user-dirs \
-      x11-xserver-utils
-
-# Language/locale settings
-#   replace en_US by your desired locale setting, 
-#   for example de_DE for german.
-ENV LANG en_US.UTF-8
-RUN echo $LANG UTF-8 > /etc/locale.gen && \
-    env DEBIAN_FRONTEND=noninteractive apt-get install -y \
-      locales && \
-    update-locale --reset LANG=$LANG
+      xdg-utils \
+      x11-xserver-utils && \
+    /cleanup
 
 # cinnamon and some utils
 RUN apt-get update && \
@@ -65,17 +75,15 @@ RUN apt-get update && \
       gnome-system-monitor \
       gnome-terminal \
       sudo \
-      synaptic
-
+      synaptic && \
+    /cleanup
 
 # startscript to set a background wallpaper
 RUN echo '#! /bin/sh\n\
 [ -e \$HOME/.cinnamon ] || {\n\
-  dconf write /org/cinnamon/desktop/background/picture-uri \"'file:///usr/share/backgrounds/gnome/Sandstone.jpg'\"\n\
+  dconf write /org/cinnamon/desktop/background/picture-uri \"file:///usr/share/backgrounds/gnome/Sandstone.jpg\"\n\
 }\n\
-exec "$@" \n\
-' > /usr/local/bin/start
-RUN chmod +x /usr/local/bin/start 
+exec cinnamon-session\n\
+' > /usr/local/bin/startcinnamon && chmod +x /usr/local/bin/startcinnamon
 
-ENTRYPOINT ["/usr/local/bin/start"]
-CMD ["cinnamon-session"]
+CMD ["/usr/local/bin/startcinnamon"]
