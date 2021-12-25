@@ -6,7 +6,7 @@
 #   https://github.com/mviereck/x11docker 
 #
 # Run desktop with:
-#   x11docker --desktop --systemd x11docker/cinnamon
+#   x11docker --desktop --init=systemd x11docker/cinnamon
 #
 # Run single application:
 #   x11docker x11docker/cinnamon nemo
@@ -25,7 +25,7 @@
 #
 # See x11docker --help for further options.
 
-FROM debian:buster
+FROM debian:bullseye
 ENV SHELL=/bin/bash
 ENV LANG=en_US.UTF-8
 
@@ -55,6 +55,7 @@ RUN apt-get update && \
       desktop-file-utils \
       libcups2 \
       libpulse0 \
+      locales \
       menu-xdg \
       mime-support \
       procps \
@@ -68,7 +69,8 @@ RUN apt-get update && \
 RUN apt-get update && \
     env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       cinnamon \
-      cinnamon-l10n && \
+      cinnamon-l10n \
+      gnome-icon-theme && \
     env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       dconf-cli \
       gedit \
@@ -81,7 +83,7 @@ RUN apt-get update && \
 # startscript to set a background wallpaper
 RUN echo '#! /bin/sh\n\
 [ -e \$HOME/.cinnamon ] || {\n\
-  dconf write /org/cinnamon/desktop/background/picture-uri \"file:///usr/share/backgrounds/gnome/Sandstone.jpg\"\n\
+  dconf write /org/cinnamon/desktop/background/picture-uri \"file:///usr/share/backgrounds/gnome/Icetwigs.jpg\"\n\
 }\n\
 exec cinnamon-session\n\
 ' > /usr/local/bin/startcinnamon && chmod +x /usr/local/bin/startcinnamon
